@@ -1,3 +1,4 @@
+package ann;
 import ann.impl.SummationInputFunction;
 import ann.interfaces.InputFunction;
 

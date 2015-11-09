@@ -1,3 +1,4 @@
+package ann;
 import ann.interfaces.ActivationFunction;
 import ann.interfaces.InputFunction;
 
