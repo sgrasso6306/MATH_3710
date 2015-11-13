@@ -30,4 +30,8 @@ public class Network {
 		return _weights[source][destination];
 	}
 	
+	public void setWeight(int source, int destination, double weight) {
+		_weights[source][destination] = weight;
+	}
+	
 }

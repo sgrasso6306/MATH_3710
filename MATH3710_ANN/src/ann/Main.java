@@ -26,9 +26,9 @@ public class Main {
 		*/
 		
 		int val = 0;
-		double[][] test = new double[4000][5000];
+		double[][] test = new double[400][5000];
 		for (int i=0; i<400; i++) {
-			for (int j=0; j<500; j++) {
+			for (int j=0; j<5000; j++) {
 				test[i][j] = val;
 				val++;
 			}
@@ -52,6 +52,10 @@ public class Main {
 		// 400 x 500  = 725
 		// 400 x 5000 = 12531
 		// 4000 x 5000 = 2057747		34min17.747s
+		
+		// laptop:
+		// 400 x 500  = 786
+		// 400 x 5000 = 16423
 		
 		// only using about 25% cpu, can I parallelize the multiplication?
 	}
