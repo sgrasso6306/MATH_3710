@@ -1,4 +1,9 @@
 package ann;
+import java.io.File;
+
+import org.apache.poi.xssf.eventusermodel.XLSX2CSV;
+
+import utils.DataModule;
 import linear.algebra.Matrix;
 import linear.algebra.Utils;
 import linear.algebra.Vector;
@@ -25,6 +30,7 @@ public class Main {
 		System.out.println(sigmoidResult);
 		*/
 		
+		/*
 		int val = 0;
 		double[][] test = new double[400][5000];
 		for (int i=0; i<400; i++) {
@@ -58,6 +64,23 @@ public class Main {
 		// 400 x 5000 = 16423
 		
 		// only using about 25% cpu, can I parallelize the multiplication?
+		*/
+		
+		DataModule dm = new DataModule();
+		
+		DataModule.setLF();
+		File path = DataModule.fileSelectorPop("choose xlsx file", "select", "Data.xlsx", DataModule.XLSX_FILE_FILTER);
+	
+		System.out.println("path: "+path);
+		
+		dm.parseXLSX(path, 1, 1, 3,3);
+		
+		for (int i=0; i<dm._featureVectors.length; i++) {
+			for (int j=0; j<dm._featureVectors[0].length; j++) {
+				System.out.print(dm._featureVectors[i][j]+" ");
+			}
+			System.out.println(dm._outputs[i]);
+		}
 	}
 
 }
