@@ -1,4 +1,6 @@
 package ann;
+import ann.impl.SigmoidActivationFunction;
+import ann.impl.SummationInputFunction;
 import ann.interfaces.ActivationFunction;
 import ann.interfaces.InputFunction;
 
@@ -11,6 +13,12 @@ public class Neuron {
 	public Neuron(InputFunction inputFunction, ActivationFunction activationFunction) {
 		_inputFunction = inputFunction;
 		_activationFunction = activationFunction;
+	}
+	
+	// default constructor using default summation input function and default sigmoid activation function
+	public Neuron() {
+		_inputFunction = new SummationInputFunction();
+		_activationFunction = new SigmoidActivationFunction();
 	}
 	
 	public double process(double[] input, double[] weights) {
