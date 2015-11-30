@@ -6,30 +6,24 @@ import linear.algebra.Utils;
 import linear.algebra.Vector;
 
 public class Network {
-	public static final int TRAINING_MODE = 0;
-	public static final int RUN_MODE = 1;
 	
-	
-	private int _inputCount, _hiddenNeuronCount, _outputCount, _mode;
+	private int _inputCount, _hiddenNeuronCount, _outputCount;
 	
 	// state of NN
 	private Vector   		_input, _targetOutput, _hiddenRawOutput, _finalOutput, _errors;
 	private WeightSet		_weights;	
 	private double			_totalError,_learningConstant;
 	
-	public Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant, int initMode) {
+	public Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant) {
 		// initialize network
 		_input = new Vector(inputCount);
 		_hiddenRawOutput = new Vector(hiddenNeuronCount);
 		_finalOutput = new Vector(outputCount);
-		if (initMode == TRAINING_MODE) {
-			_targetOutput = new Vector(outputCount);
-		}
+
 		_inputCount = inputCount;
 		_hiddenNeuronCount = hiddenNeuronCount;
 		_outputCount = outputCount;
 		_learningConstant = learningConstant;
-		_mode = initMode;
 		_weights = new WeightSet(inputCount, hiddenNeuronCount, outputCount);
 		
 		// initialize weights randomly
@@ -189,11 +183,21 @@ public class Network {
 	
 	
 	
-	
-	
-	
-	
-	
+	public int getInputCount() {
+		return _inputCount;
+	}
+	public int getHiddenCount() {
+		return _hiddenNeuronCount;
+	}	
+	public int getOutputCount() {
+		return _outputCount;
+	}
+	public double getLearningConstant() {
+		return _learningConstant;
+	}
+	public WeightSet getWeights() {
+		return _weights;
+	}
 	
 	
 	

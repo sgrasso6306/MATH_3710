@@ -15,46 +15,6 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		/*
-		 * double[] input = {1.0,2.0,3.0,4.0,5.0}; double[] weights =
-		 * {1.0,2.0,1.0,1.0,2.0};
-		 * 
-		 * InputFunction inF = new SummationInputFunction();
-		 * System.out.println(inF.processInput(input, weights));
-		 * 
-		 * 
-		 * 
-		 * double sigmoidResult = 1 / (2 + Math.expm1(-5));
-		 * 
-		 * System.out.println(sigmoidResult);
-		 */
-
-		/*
-		 * int val = 0; double[][] test = new double[400][5000]; for (int i=0;
-		 * i<400; i++) { for (int j=0; j<5000; j++) { test[i][j] = val; val++; }
-		 * }
-		 * 
-		 * Matrix testMatrix = new Matrix(test);
-		 * 
-		 * System.out.println();
-		 * 
-		 * long startMillis = java.lang.System.currentTimeMillis();
-		 * 
-		 * Matrix multTest = Utils.multiply(testMatrix,testMatrix.transpose());
-		 * //multTest.printMatrix();
-		 * 
-		 * long endMillis = java.lang.System.currentTimeMillis(); long
-		 * multMillis = endMillis - startMillis;
-		 * 
-		 * System.out.println("done, took "+ multMillis + " milliseconds");
-		 * 
-		 * // some milli counts on desktop: // 400 x 500 = 725 // 400 x 5000 =
-		 * 12531 // 4000 x 5000 = 2057747 34min17.747s
-		 * 
-		 * // laptop: // 400 x 500 = 786 // 400 x 5000 = 16423
-		 * 
-		 * // only using about 25% cpu, can I parallelize the multiplication?
-		 */
 
 		/*
 		 * DataModule dm = new DataModule();
@@ -124,11 +84,13 @@ public class Main {
 		hiddenWeights[2][0] = .45;
 		hiddenWeights[2][1] = .55;
 	*/
+		
+	/*
 		double[] input = { 1, .05, .1 };
 		double[] targets = { 1, 0 };
 		
-		//Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant, int initMode)
-		Network testNet = new Network(3, 3, 2, 10, Network.RUN_MODE);
+		//Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant)
+		Network testNet = new Network(3, 3, 2, 10);
 		//testNet.setInputWeights(inputWeights);
 		//testNet.setHiddenWeights(hiddenWeights);
 		
@@ -149,6 +111,51 @@ public class Main {
 		System.out.println("output 0: "+testNet.getOutput().getElement(0));
 		System.out.println("output 1: "+testNet.getOutput().getElement(1));
 		System.out.println();
+	*/
+		DataModule.setLF();
+		File path = DataModule.fileSelectorPop("choose xlsx file", "select", "Data.xlsx",DataModule.XLSX_FILE_FILTER);
+		
+		int iCount = DataModule.loadInputCount(path);
+		int hCount = DataModule.loadHiddenCount(path);
+		int oCount = DataModule.loadOutputCount(path);
+	
+		double lConst = DataModule.loadLearningConstant(path);
+		
+		System.out.println("inputs: "+iCount);
+		System.out.println("hidden: "+hCount);
+		System.out.println("output: "+oCount);
+		System.out.println("lConst: "+lConst);
+		
+		double[][] inputWeights = DataModule.loadInputWeights(path);
+		double[][] hiddenWeights = DataModule.loadHiddenWeights(path);
+		
+		for (int i=0; i<iCount; i++) {
+			for (int h=0; h<hCount; h++) {		
+				System.out.println(inputWeights[i][h]);
+			}
+		}
+	
+		System.out.println();
+		
+		for (int i=0; i<hCount; i++) {
+			for (int h=0; h<oCount; h++) {	
+				System.out.println(hiddenWeights[i][h]);
+			}
+		}
+		
+		
+		
+		Network net = new Network(iCount,hCount,oCount,lConst);
+		net.setInputWeights(inputWeights);
+		net.setHiddenWeights(hiddenWeights);
+		
+		
+		DataModule.saveNetwork(path, net);
+		
+		
+		
+		
+		
 	}
 
 }
