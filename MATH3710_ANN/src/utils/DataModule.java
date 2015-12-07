@@ -266,6 +266,7 @@ public class DataModule {
 	}
 
 	public static final int XLSX_FILE_FILTER = 0;
+	public static final int BMP_FILE_FILTER = 1;
 
 	public static File fileSelectorPop(String title, String buttonText,
 			String defaultText, int fileFilter) {
@@ -278,6 +279,10 @@ public class DataModule {
 			chooser.setFileFilter(new FileNameExtensionFilter("XLSX file",
 					"xlsx", "XLSX"));
 		}
+		if (fileFilter == BMP_FILE_FILTER) {
+			chooser.setFileFilter(new FileNameExtensionFilter("BMP file",
+					"bmp", "BMP"));
+		}		
 
 		chooser.showDialog(null, buttonText);
 		return chooser.getSelectedFile();

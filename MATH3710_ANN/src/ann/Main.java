@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.poi.xssf.eventusermodel.XLSX2CSV;
 
 import utils.DataModule;
+import utils.ImageModule;
 import linear.algebra.Matrix;
 import linear.algebra.Utils;
 import linear.algebra.Vector;
@@ -85,36 +86,49 @@ public class Main {
 		hiddenWeights[2][1] = .55;
 	*/
 		
-	/*
+	
 		double[] input = { 1, .05, .1 };
 		double[] targets = { 1, 0 };
 		
+		double[] input2 = { 1, 5, 9 };
+		double[] targets2 = { 0, 1 };
+		
 		//Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant)
-		Network testNet = new Network(3, 3, 2, 10);
+		Network testNet = new Network(3, 3, 2, 5);
 		//testNet.setInputWeights(inputWeights);
 		//testNet.setHiddenWeights(hiddenWeights);
 		
-		testNet.forwardPropagation(new Vector(input));
+		//testNet.forwardPropagation(new Vector(input));
 		
-		System.out.println("initial error: "+testNet.computeTotalError(new Vector(targets)));
+		//System.out.println("initial error: "+testNet.computeTotalError(new Vector(targets)));
 		
 		
-		for (int i=0; i<1000000; i++) {
-			testNet.backwardPropagation(new Vector(targets));
-			
+		for (int i=0; i<1000; i++) {
 			testNet.forwardPropagation(new Vector(input));
+			testNet.backwardPropagation(new Vector(targets));
+			//testNet.forwardPropagation(new Vector(input));
 			
-
+			testNet.forwardPropagation(new Vector(input2));
+			testNet.backwardPropagation(new Vector(targets2));
+			//testNet.forwardPropagation(new Vector(input2));
+			
 		}
+		
+		testNet.forwardPropagation(new Vector(input));
 		
 		System.out.println("error after backprop: "+testNet.computeTotalError(new Vector(targets)));
 		System.out.println("output 0: "+testNet.getOutput().getElement(0));
 		System.out.println("output 1: "+testNet.getOutput().getElement(1));
 		System.out.println();
-	*/
-		DataModule.setLF();
-		File path = DataModule.fileSelectorPop("choose xlsx file", "select", "Data.xlsx",DataModule.XLSX_FILE_FILTER);
 		
+		testNet.forwardPropagation(new Vector(input2));
+		
+		System.out.println("error after backprop: "+testNet.computeTotalError(new Vector(targets2)));
+		System.out.println("output 0: "+testNet.getOutput().getElement(0));
+		System.out.println("output 1: "+testNet.getOutput().getElement(1));
+		System.out.println();		
+		
+	/*	
 		int iCount = DataModule.loadInputCount(path);
 		int hCount = DataModule.loadHiddenCount(path);
 		int oCount = DataModule.loadOutputCount(path);
@@ -151,11 +165,65 @@ public class Main {
 		
 		
 		DataModule.saveNetwork(path, net);
+	*/
+	
+		
+	/*
+		// 10,000 pixel values
+		DataModule.setLF();
+		File path = DataModule.fileSelectorPop("choose xlsx file", "select", "Data.xlsx",DataModule.BMP_FILE_FILTER);
+		System.out.println(path);
+		double[] input1 = ImageModule.loadImage(path);
+		double[] targets1 = { 1 , 0 };
+		
+		path = DataModule.fileSelectorPop("choose xlsx file", "select", "Data.xlsx",DataModule.BMP_FILE_FILTER);
+		System.out.println(path);
+		double[] input2 = ImageModule.loadImage(path);
+		double[] targets2 = { 0 , 1 };
+		
+		for (int i=0; i<input1.length; i++) {
+			if(input1[i] == 0.0) {
+				input1[i] = 1.0;
+			}
+			if(input1[i] == 1.0) {
+				input1[i] = 0.0;
+			}
+		}
+		for (int i=0; i<input2.length; i++) {
+			if(input2[i] == 0.0) {
+				input2[i] = 1.0;
+			}
+			if(input2[i] == 1.0) {
+				input2[i] = 0.0;
+			}
+		}
+		
+		
+		//Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant)
+		Network testNet = new Network(10000, 100, 2, .2);
+		
+		
+		for (int i=0; i<100; i++) {
+			testNet.forwardPropagation(new Vector(input1));
+			testNet.backwardPropagation(new Vector(targets1));
+			
+			testNet.forwardPropagation(new Vector(input2));
+			testNet.backwardPropagation(new Vector(targets2));
+		}
 		
 		
 		
 		
+		testNet.forwardPropagation(new Vector(input1));
+		System.out.println("output 0: "+testNet.getOutput().getElement(0));
+		System.out.println("output 1: "+testNet.getOutput().getElement(1));
 		
+		testNet.forwardPropagation(new Vector(input2));
+		System.out.println("output 0: "+testNet.getOutput().getElement(0));
+		System.out.println("output 1: "+testNet.getOutput().getElement(1));
+		
+		*/
+
 	}
 
 }
