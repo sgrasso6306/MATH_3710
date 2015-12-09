@@ -48,4 +48,20 @@ public class Utils {
 		return 1 / (2 + Math.expm1(-input));
 	}
 	
+	
+
+	/*
+	public static double normalize(double lowerBound, double upperBound, double input) {									// no no no needs to be the same number of divisions for all data
+		double range = upperBound - lowerBound;
+		double scaledInput = input;
+		
+		while (scaledInput > range) {						// no nonononono
+			scaledInput = scaledInput / 10.0;
+		}
+		
+		scaledInput = scaledInput + lowerBound;
+		
+		return scaledInput;
+	}
+	*/
 }

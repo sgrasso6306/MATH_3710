@@ -1,7 +1,11 @@
 package linear.algebra;
 
-public class Vector {					// assumed to be column vector
+public class Vector implements java.io.Serializable {					// assumed to be column vector
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double[] _vector;
 	
 	public Vector(int size) {
@@ -10,6 +14,13 @@ public class Vector {					// assumed to be column vector
 	
 	public Vector(double[] vector) {
 		_vector = vector;
+	}
+	public Vector(int[] vector) {
+		_vector = new double[vector.length];
+		
+		for (int i=0; i<vector.length; i++) {
+			_vector[i] = (double)vector[i];
+		}
 	}
 	
 	

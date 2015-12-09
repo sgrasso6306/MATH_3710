@@ -5,8 +5,13 @@ import java.util.Random;
 import linear.algebra.Utils;
 import linear.algebra.Vector;
 
-public class Network {
+public class Network implements java.io.Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private int _inputCount, _hiddenNeuronCount, _outputCount;
 	
 	// state of NN
@@ -30,7 +35,7 @@ public class Network {
 		Random generator = new Random();
 		for (int i=0; i<inputCount; i++) {
 			for (int j=0; j<hiddenNeuronCount; j++) {
-				_weights.setWeight(generator.nextDouble(), WeightSet.INPUT_LAYER, i, j);
+				_weights.setWeight(generator.nextDouble()+0.000000001, WeightSet.INPUT_LAYER, i, j);
 			}
 		}
 		for (int i=0; i<hiddenNeuronCount; i++) {
@@ -57,7 +62,7 @@ public class Network {
 	}
 	
 	
-	public void forwardPropagation(Vector input) {
+	public void forwardPropagation(Vector input, boolean printSample) {
 		_input = input;
 		
 		// update hidden raw outputs (start at index 1 to avoid updating biases)
@@ -80,9 +85,12 @@ public class Network {
 			netInput = Utils.dotProduct(_hiddenRawOutput, inputWeights);					// compute net input
 			rawOutput = Utils.logisticFunction(netInput);									// compute neuron output
 			_finalOutput.setElement(i, rawOutput);
+
+			if (printSample && i==5) {
+				System.out.println("output layer netInput: "+netInput);
+				System.out.println("output layer rawOutput: "+_finalOutput.getElement(i));
+			}
 			
-			//System.out.println("output layer netInput: "+netInput);
-			//System.out.println("output layer rawOutput: "+_finalOutput.getElement(i)+ " " + rawOutput);
 		}
 		
 	}

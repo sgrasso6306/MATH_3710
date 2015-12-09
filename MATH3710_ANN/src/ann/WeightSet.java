@@ -2,7 +2,7 @@ package ann;
 
 import linear.algebra.Vector;
 
-public class WeightSet {
+public class WeightSet  implements java.io.Serializable{
 	public static final int INPUT_LAYER = 0;
 	public static final int HIDDEN_LAYER = 1;
 	
