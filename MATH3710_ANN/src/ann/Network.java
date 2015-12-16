@@ -31,16 +31,19 @@ public class Network implements java.io.Serializable{
 		_learningConstant = learningConstant;
 		_weights = new WeightSet(inputCount, hiddenNeuronCount, outputCount);
 		
+		double inputWeightScale = 1/new Double(_inputCount);
+		double hiddenWeightScale = 1/new Double(_hiddenNeuronCount);
+		
 		// initialize weights randomly
 		Random generator = new Random();
 		for (int i=0; i<inputCount; i++) {
 			for (int j=0; j<hiddenNeuronCount; j++) {
-				_weights.setWeight(generator.nextDouble()+0.000000001, WeightSet.INPUT_LAYER, i, j);
+				_weights.setWeight(generator.nextDouble()*inputWeightScale, WeightSet.INPUT_LAYER, i, j);
 			}
 		}
 		for (int i=0; i<hiddenNeuronCount; i++) {
 			for (int j=0; j<outputCount; j++) {
-				_weights.setWeight(generator.nextDouble(), WeightSet.HIDDEN_LAYER, i, j);
+				_weights.setWeight(generator.nextDouble()*hiddenWeightScale, WeightSet.HIDDEN_LAYER, i, j);
 			}
 		}
 		
@@ -86,7 +89,7 @@ public class Network implements java.io.Serializable{
 			rawOutput = Utils.logisticFunction(netInput);									// compute neuron output
 			_finalOutput.setElement(i, rawOutput);
 
-			if (printSample && i==5) {
+			if (printSample && i==0) {
 				System.out.println("output layer netInput: "+netInput);
 				System.out.println("output layer rawOutput: "+_finalOutput.getElement(i));
 			}
@@ -203,6 +206,11 @@ public class Network implements java.io.Serializable{
 	public double getLearningConstant() {
 		return _learningConstant;
 	}
+	
+	public void setLearningConstant(double learningConstant) {
+		_learningConstant = learningConstant;
+	}
+	
 	public WeightSet getWeights() {
 		return _weights;
 	}

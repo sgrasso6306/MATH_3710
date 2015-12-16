@@ -265,35 +265,4 @@ public class DataModule {
 		}
 	}
 
-	public static final int XLSX_FILE_FILTER = 0;
-	public static final int BMP_FILE_FILTER = 1;
-
-	public static File fileSelectorPop(String title, String buttonText,
-			String defaultText, int fileFilter) {
-		JFileChooser chooser = new JFileChooser();
-		chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-		chooser.setDialogTitle(title);
-		chooser.setCurrentDirectory(null);
-		chooser.setSelectedFile(new File(defaultText));
-		if (fileFilter == XLSX_FILE_FILTER) {
-			chooser.setFileFilter(new FileNameExtensionFilter("XLSX file",
-					"xlsx", "XLSX"));
-		}
-		if (fileFilter == BMP_FILE_FILTER) {
-			chooser.setFileFilter(new FileNameExtensionFilter("BMP file",
-					"bmp", "BMP"));
-		}		
-
-		chooser.showDialog(null, buttonText);
-		return chooser.getSelectedFile();
-	}
-
-	public static void setLF() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			System.out.println("Unable to set LookAndFeel");
-		}
-	}
-
 }

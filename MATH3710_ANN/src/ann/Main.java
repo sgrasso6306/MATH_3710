@@ -16,6 +16,7 @@ import utils.MNISTModule;
 import linear.algebra.Matrix;
 import linear.algebra.Utils;
 import linear.algebra.Vector;
+import ann.UI.UIFactory;
 import ann.impl.SummationInputFunction;
 import ann.interfaces.InputFunction;
 
@@ -263,6 +264,26 @@ public class Main {
 		 * System.out.println("output: "); testNet.getOutput().printVector();
 		 */
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+/*		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		DataModule.setLF();
 		File networkPath = DataModule.fileSelectorPop(
 				"choose network save file", "select", "select", -1);
@@ -294,7 +315,7 @@ public class Main {
 		}
 */
 
-
+		/*
 		try {																				// load data from file
 			FileInputStream fileIn = new FileInputStream(dataSetPath);
 			ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -307,14 +328,14 @@ public class Main {
 			System.out.println("DataSet class not found");
 			c.printStackTrace();
 		}
-
+		
 		
 /*		
 		Network testNet = new Network(dataSet.featureCount(), 50,							// build new network
 				dataSet.outputCount(), 10);
 */		
 		
-		
+/*		
 		Network testNet = null;																// load existing network
 		try {
 			FileInputStream fileIn = new FileInputStream(networkPath);
@@ -388,7 +409,7 @@ public class Main {
 		 * i.printStackTrace(); } catch (ClassNotFoundException c) {
 		 * System.out.println("Network class not found"); c.printStackTrace(); }
 		 */
-		
+/*		
 		System.out.println();
 		System.out.println("test this thing:");
 	    Random rand = new Random();
@@ -406,9 +427,151 @@ public class Main {
 
 		System.out.println("output: ");
 		testNet.getOutput().printVector();
+*/
 
 
-
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		  // 900 pixel values 
+		UIFactory.setLF(); 
+		File imagePath0 = UIFactory.fileSelectorPop("choose image file 0", "select", "select", UIFactory.BMP_FILE_FILTER); 
+		double[] input0 = ImageModule.loadImage(imagePath0); 
+		double[] targets0 = { 1 , 0 };
+		  
+		File imagePath1 = UIFactory.fileSelectorPop("choose image file 1", "select", "select", UIFactory.BMP_FILE_FILTER); 
+		double[] input1 = ImageModule.loadImage(imagePath1); 
+		double[] targets1 = { 0 , 1 };
+		
+		File networkPath = UIFactory.fileSelectorPop("choose bmpNetwork save file", "select", "select", -1);
+		  
+		  for (int i=0; i<input1.length; i++) { 
+			  if(input1[i] == 0.0) { 
+				  input1[i] = 0.00001; 
+			  } 
+			  if(input1[i] == 1.0) { 
+				  input1[i] = 0.0; 
+			  } 
+		  } 
+		  
+		  for (int i=0; i<input0.length; i++) { 
+			  if(input0[i] == 0.0) { 
+				  input0[i] = 0.00001; 
+			  } 
+			  if(input0[i] == 1.0) { 
+				  input0[i] = 0.0; 
+			  } 
+		  }
+		  
+		  
+		  Network bmpNet;
+		  
+		  /*
+		  //Network(int inputCount, int hiddenNeuronCount, int outputCount, double learningConstant);		// build new network
+		  bmpNet = new Network(900, 100, 2, 10);
+		 */
+		  
+		  bmpNet = null;		// load existing network
+			try {
+				FileInputStream fileIn = new FileInputStream(networkPath);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				bmpNet = (Network) in.readObject();
+				in.close();
+				fileIn.close();
+			} catch (IOException i) {
+				i.printStackTrace();
+			} catch (ClassNotFoundException c) {
+				System.out.println("Network class not found");
+				c.printStackTrace();
+			}
+		  
+		  bmpNet.setLearningConstant(100);
+		  
+		  
+		  
+		  
+		  long start = System.currentTimeMillis();
+		  int repeats = 15400000;												// 100000 : 2:17       1100000 : 26:23
+		  for (int i=0; i<repeats; i++) { 
+			  bmpNet.forwardPropagation(new Vector(input1), false);
+			  bmpNet.backwardPropagation(new Vector(targets1));
+		  
+			  
+			  bmpNet.forwardPropagation(new Vector(input0), false
+					  );
+			  bmpNet.backwardPropagation(new Vector(targets0)); 
+			  
+				if (i % 10 == 0) {
+					System.out.print(".");
+				}
+				if ((i % 800) == 0) {
+					System.out.print(" " + i + " / " + repeats);
+					long end = System.currentTimeMillis();
+					long elapsed = end - start;
+					long minutes = elapsed / (1000 * 60);
+					long seconds = (elapsed / 1000) - (minutes * 60);
+					System.out.println("  " + minutes + " m " + seconds + " s ");
+				}
+				if (i % 10000 == 0) {
+					try {																// save the network after every training set
+						FileOutputStream fileOut = new FileOutputStream(networkPath);
+						ObjectOutputStream out = new ObjectOutputStream(fileOut);
+						out.writeObject(bmpNet);
+						out.close();
+						fileOut.close();
+						System.out.println("Serialized network is saved in: "
+								+ networkPath.toString());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+		  }
+		  
+		  
+		  
+		  System.out.println("input 0:");
+		  bmpNet.forwardPropagation(new Vector(input0), true);
+		  System.out.println("output 0: "+bmpNet.getOutput().getElement(0));
+		  System.out.println("output 1: "+bmpNet.getOutput().getElement(1));
+		  
+		  System.out.println("");
+		  
+		  System.out.println("input 1:");
+		  bmpNet.forwardPropagation(new Vector(input1), true);
+		  System.out.println("output 0: "+bmpNet.getOutput().getElement(0));
+		  System.out.println("output 1: "+bmpNet.getOutput().getElement(1));
+		 
+				
+		
+			try {																// save the network after every training set
+				FileOutputStream fileOut = new FileOutputStream(networkPath);
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+				out.writeObject(bmpNet);
+				out.close();
+				fileOut.close();
+				System.out.println("Serialized network is saved in: "
+						+ networkPath.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 	}
 }

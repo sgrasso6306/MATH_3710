@@ -6,7 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import ann.DataSet;
+import ann.UI.UI;
 
 /**
  * This class implements a reader for the MNIST dataset of handwritten digits. The dataset is found
@@ -17,10 +20,10 @@ import ann.DataSet;
 
 public class MNISTModule {
 
-	public static final double INPUT_SCALE_FACTOR = 0.000001;
+	public static final double INPUT_SCALE_FACTOR = 0.0000001;
 	
 	
-	public static DataSet buildDataSetFromMNIST(File labelFile, File dataFile) throws IOException {
+	public static DataSet buildDataSetFromMNIST(File labelFile, File dataFile, UI output) throws IOException {
 
 		DataSet dataSet = null;
 		
@@ -77,9 +80,11 @@ public class MNISTModule {
 
 			// At this point, 'label' and 'image' agree and you can do whatever
 			// you like with them.
-
+            
+			
 			if (numLabelsRead % 10 == 0) {
 				System.out.print(".");
+
 			}
 			if ((numLabelsRead % 800) == 0) {
 				System.out.print(" " + numLabelsRead + " / " + numLabels);
@@ -88,14 +93,16 @@ public class MNISTModule {
 				long minutes = elapsed / (1000 * 60);
 				long seconds = (elapsed / 1000) - (minutes * 60);
 				System.out.println("  " + minutes + " m " + seconds + " s ");
+
 			}
+
 		}
-		System.out.println();
+		output.outputPrintln("");
 		long end = System.currentTimeMillis();
 		long elapsed = end - start;
 		long minutes = elapsed / (1000 * 60);
 		long seconds = (elapsed / 1000) - (minutes * 60);
-		System.out.println("Read " + numLabelsRead + " samples in " + minutes
+		output.outputPrintln("Read " + numLabelsRead + " samples in " + minutes
 				+ " m " + seconds + " s ");
 		
 		return dataSet;
