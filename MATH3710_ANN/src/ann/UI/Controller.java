@@ -156,7 +156,7 @@ public class Controller {
 		}
 		
 		_openNetwork.setLearningConstant(learningConstant);
-		_gui.outputPrintln("Learning constant set to: "+_openNetwork.getLearningConstant());
+		_gui.outputPrintln("Learning constant set to: "+_openNetwork.getLearningConstant());										// note: 35000 for 21 mins
 		_gui.outputPrintln("");
 		return true;
 	}
@@ -204,6 +204,9 @@ public class Controller {
 	
 	public boolean loadDataSet() {
 		File dataSetPath = UIFactory.fileSelectorPop("Data Set", "Load", "dataset.data", UIFactory.DATA_FILE_FILTER);
+		if (dataSetPath == null) {
+			return false;
+		}
 		
 		try {																				// load data from file
 			FileInputStream fileIn = new FileInputStream(dataSetPath);
@@ -272,18 +275,22 @@ public class Controller {
 				_openNetwork.forwardPropagation(new Vector(_openDataSet.getObservation(i)),false);				
 				_openNetwork.backwardPropagation(new Vector(_openDataSet.getOutput(i)));	
 				
-				if (i % 10 == 0) {
+				if ((i % Math.floor((_openDataSet.observationCount()/250))) == 0) {
 					System.out.print(".");
 				}
-				if ((i % 800) == 0) {
-					System.out.print(" " + i + " / " + _openDataSet.observationCount());
-					long end = System.currentTimeMillis();
-					long elapsed = end - start;
-					long minutes = elapsed / (1000 * 60);
-					long seconds = (elapsed / 1000) - (minutes * 60);
-					System.out.println("  " + minutes + " m " + seconds + " s ");
+				if ((i % 8000) == 0) {
+					
 				}
 			}
+			if ((j % Math.floor((repeats/20))) == 0) {
+				System.out.print(" " + j + " / " + repeats);
+				long end = System.currentTimeMillis();
+				long elapsed = end - start;
+				long minutes = elapsed / (1000 * 60);
+				long seconds = (elapsed / 1000) - (minutes * 60);
+				System.out.println("  " + minutes + " m " + seconds + " s ");
+			}
+
 		}
 		
 		return true;

@@ -20,7 +20,7 @@ import ann.UI.UI;
 
 public class MNISTModule {
 
-	public static final double INPUT_SCALE_FACTOR = 0.0000001;
+	public static final double INPUT_SCALE_FACTOR = 0.001;
 	
 	
 	public static DataSet buildDataSetFromMNIST(File labelFile, File dataFile, UI output) throws IOException {
