@@ -321,6 +321,33 @@ public class Controller {
 		return true;
 	}
 	
+	public void accuracyAgainstDataSet() {
+		if (_openDataSet == null || _openNetwork == null || _openDataSet.featureCount() != _openNetwork.getInputCount()) {
+			UIFactory.messagePop("Error", "Broken!", JOptionPane.WARNING_MESSAGE);
+		}
+
+		Vector currentInput;
+		Vector currentTargets;
+		int correctCount = 0;
+		int incorrectCount = 0;
+		for (int i=0; i<_openDataSet.observationCount(); i++) {
+			currentInput = new Vector(_openDataSet.getObservation(i));
+			currentTargets = new Vector(_openDataSet.getOutput(i));
+			
+			if (_openDataSet.evaluateClassification(i, currentTargets)) {
+				correctCount++;
+			}
+			else {
+				incorrectCount++;
+			}
+		}
+	
+		System.out.println("Network accuracy against open data set:");
+		System.out.println("Correct predictions:   "+correctCount);
+		System.out.println("Incorrect predictions: "+incorrectCount);
+	
+	}
+	
 	
 	public void printNetworkStats() {
 		if (_openNetwork != null) {

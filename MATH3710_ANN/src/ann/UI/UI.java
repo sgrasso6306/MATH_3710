@@ -46,7 +46,9 @@ public class UI extends JFrame implements ActionListener {
 	private OutputPanel _outputPanel;
 	private JMenuBar _menuBar;
 	private JMenu _networkMenu, _dataSetMenu;
-	private JMenuItem _newNetwork, _openNetwork, _saveNetworkAs, _saveNetwork, _setLearningConstant, _buildDataSet, _loadDataSet, _saveDataSet, _trainNetwork, _computeOutput;
+	private JMenuItem _newNetwork, _openNetwork, _saveNetworkAs, _saveNetwork, 
+		_setLearningConstant, _buildDataSet, _loadDataSet, _saveDataSet, _trainNetwork, 
+		_computeOutput, _accuracyAgainstDataSet;
 	
 	public UI(Controller c) {
 		super("Neural Net Designer");
@@ -137,6 +139,9 @@ public class UI extends JFrame implements ActionListener {
         else if ("COMPUTE_SINGLE_OUTPUT".equals(e.getActionCommand())) {
         	_controller.computeSingleOutput();
         }
+        else if ("ACCURACY_AGAINST_DATASET".equals(e.getActionCommand())) {
+        	_controller.accuracyAgainstDataSet();
+        }        
         else {
         	System.out.println(e.getActionCommand());
         	System.exit(0);
@@ -191,14 +196,18 @@ public class UI extends JFrame implements ActionListener {
 		
 		
 		JMenu runMenu = new JMenu("Run");
-		_trainNetwork = new JMenuItem("Train network...");
-		_computeOutput = new JMenuItem("Compute output...");
+		_trainNetwork = new JMenuItem("Train network...");								
+		_computeOutput = new JMenuItem("Compute single output...");
+		_accuracyAgainstDataSet = new JMenuItem("Compute accuracy with dataset");
 		_trainNetwork.addActionListener(this);
 		_trainNetwork.setActionCommand("TRAIN_NETWORK");
 		_computeOutput.addActionListener(this);
 		_computeOutput.setActionCommand("COMPUTE_SINGLE_OUTPUT");
+		_accuracyAgainstDataSet.addActionListener(this);
+		_accuracyAgainstDataSet.setActionCommand("ACCURACY_AGAINST_DATASET");
 		runMenu.add(_trainNetwork);
 		runMenu.add(_computeOutput);
+		runMenu.add(_accuracyAgainstDataSet);
 		
 		menuBar.add(networkMenu);
 		menuBar.add(dataSetMenu);

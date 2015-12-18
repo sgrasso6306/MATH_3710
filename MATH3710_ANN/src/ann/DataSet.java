@@ -1,5 +1,7 @@
 package ann;
 
+import linear.algebra.Vector;
+
 public class DataSet implements java.io.Serializable{
 	private double[][]	_observations;
 	private double[][]	_outputs;
@@ -44,7 +46,32 @@ public class DataSet implements java.io.Serializable{
 	}	
 	
 	
-	
+	public boolean evaluateClassification(int index, Vector targets) {
+		Vector actuals = new Vector(getObservation(index));
+		
+		// determine index of target output 
+		int classifyIndex = -1;
+		for (int i=0; i<targets.size(); i++) {
+			if (new Double(targets.getElement(i)).equals(1.0)) {
+				classifyIndex = i;
+			}
+		}
+		
+		// the actual output corresponding to the target output
+		double classifyOutput = actuals.getElement(classifyIndex);
+		
+		// check whether actual output has highest probability
+		for (int i=0; i<actuals.size(); i++) {
+			if (i == classifyIndex) {		// make sure to not compare desired actual output against itself!
+				continue;
+			}
+			if (actuals.getElement(i) >= classifyOutput) {		// if another output has higher probability, prediction is false
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
 	
 	
