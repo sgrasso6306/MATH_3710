@@ -327,14 +327,16 @@ public class Controller {
 		}
 
 		Vector currentInput;
-		Vector currentTargets;
+		Vector currentOutput;
 		int correctCount = 0;
 		int incorrectCount = 0;
 		for (int i=0; i<_openDataSet.observationCount(); i++) {
 			currentInput = new Vector(_openDataSet.getObservation(i));
-			currentTargets = new Vector(_openDataSet.getOutput(i));
 			
-			if (_openDataSet.evaluateClassification(i, currentTargets)) {
+			_openNetwork.forwardPropagation(currentInput,false);
+			currentOutput = _openNetwork.getOutput();
+			
+			if (_openDataSet.evaluateClassification(i, currentOutput)) {
 				correctCount++;
 			}
 			else {

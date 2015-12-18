@@ -46,14 +46,15 @@ public class DataSet implements java.io.Serializable{
 	}	
 	
 	
-	public boolean evaluateClassification(int index, Vector targets) {
-		Vector actuals = new Vector(getObservation(index));
+	public boolean evaluateClassification(int index, Vector actuals) {
+		Vector targets = new Vector(getOutput(index));
 		
 		// determine index of target output 
 		int classifyIndex = -1;
 		for (int i=0; i<targets.size(); i++) {
 			if (new Double(targets.getElement(i)).equals(1.0)) {
 				classifyIndex = i;
+				break;
 			}
 		}
 		
