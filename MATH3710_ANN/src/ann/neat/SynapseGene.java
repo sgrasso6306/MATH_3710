@@ -28,5 +28,14 @@ public class SynapseGene {
 	public boolean getEnabled() {
 		return _enabled;
 	}
+	public int innovationNumber() {
+		return _innovationNumber;
+	}
+	public int sourceIndex() {
+		return _sourceIndex;
+	}
+	public int destIndex() {
+		return _destIndex;
+	}
 	
 }
