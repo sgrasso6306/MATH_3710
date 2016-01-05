@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import ann.DataSet;
+import ann.fixed.DataSet;
 
 public class ImageModule {
 

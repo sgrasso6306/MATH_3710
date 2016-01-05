@@ -18,8 +18,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import ann.Network;
-import ann.WeightSet;
+import ann.fixed.Network;
+import ann.fixed.WeightSet;
 
 public class DataModule {
 

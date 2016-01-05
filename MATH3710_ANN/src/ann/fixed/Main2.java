@@ -1,4 +1,4 @@
-package ann;
+package ann.fixed;
 
 import java.io.File;
 
@@ -20,6 +20,7 @@ public class Main2 {
 		//DataSet test = ImageModule.buildDataSetFromBMPDir(testPath);
 		
 		new Controller();
+		
 /*		
 		int testInputCount = 900;
 		

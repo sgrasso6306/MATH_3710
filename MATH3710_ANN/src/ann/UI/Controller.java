@@ -13,8 +13,9 @@ import javax.swing.SwingUtilities;
 import linear.algebra.Vector;
 import utils.ImageModule;
 import utils.MNISTModule;
-import ann.DataSet;
-import ann.Network;
+import ann.fixed.DataSet;
+import ann.fixed.Network;
+import ann.visual.Visualizer;
 
 public class Controller {
 	private UI			_gui;
@@ -101,6 +102,9 @@ public class Controller {
 		}
 		
 		File networkPath = UIFactory.fileSelectorPop("Network Path", "Save", "network.ann", UIFactory.ANN_FILE_FILTER);
+		if(networkPath == null) {
+			return false;
+		}
 		if (!networkPath.toString().endsWith(".ann") && !networkPath.toString().endsWith(".ANN")) {
 			networkPath = new File(networkPath.toString()+".ann");
 		}
@@ -224,7 +228,7 @@ public class Controller {
 			return false;
 		}
 		
-		_gui.outputPrintln("Dataset loaded:");
+		_gui.outputPrintln("Dataset loaded: "+ dataSetPath);
 		_gui.outputPrintln("Observation count: "+_openDataSet.observationCount());
 		_gui.outputPrintln("Input count:     "+_openDataSet.featureCount());
 		_gui.outputPrintln("Output count:      "+_openDataSet.outputCount());
@@ -275,14 +279,14 @@ public class Controller {
 				_openNetwork.forwardPropagation(new Vector(_openDataSet.getObservation(i)),false);				
 				_openNetwork.backwardPropagation(new Vector(_openDataSet.getOutput(i)));	
 				
-				if ((i % Math.floor((_openDataSet.observationCount()/250))) == 0) {
+				if ((i % Math.floor((_openDataSet.observationCount()/250.0))) == 0) {
 					System.out.print(".");
 				}
-				if ((i % 8000) == 0) {
+				if ((i % Math.floor((_openDataSet.observationCount()/250.0))) == 0) {
 					
 				}
 			}
-			if ((j % Math.floor((repeats/20))) == 0) {
+			if ((j % Math.floor((repeats/20.0))) == 0) {
 				System.out.print(" " + j + " / " + repeats);
 				long end = System.currentTimeMillis();
 				long elapsed = end - start;
@@ -348,6 +352,13 @@ public class Controller {
 		System.out.println("Correct predictions:   "+correctCount);
 		System.out.println("Incorrect predictions: "+incorrectCount);
 	
+	}
+	
+	public void visualizeNetwork() {
+		if (_openNetwork == null) {
+			UIFactory.messagePop("Error", "No network is open!", JOptionPane.WARNING_MESSAGE);
+		}
+		new Visualizer(_openNetwork);
 	}
 	
 	

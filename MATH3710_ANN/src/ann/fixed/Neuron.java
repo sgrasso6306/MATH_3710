@@ -1,4 +1,4 @@
-package ann;
+package ann.fixed;
 import ann.impl.SigmoidActivationFunction;
 import ann.impl.SummationInputFunction;
 import ann.interfaces.ActivationFunction;

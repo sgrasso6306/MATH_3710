@@ -48,7 +48,7 @@ public class UI extends JFrame implements ActionListener {
 	private JMenu _networkMenu, _dataSetMenu;
 	private JMenuItem _newNetwork, _openNetwork, _saveNetworkAs, _saveNetwork, 
 		_setLearningConstant, _buildDataSet, _loadDataSet, _saveDataSet, _trainNetwork, 
-		_computeOutput, _accuracyAgainstDataSet;
+		_computeOutput, _accuracyAgainstDataSet, _visualizeNetwork;
 	
 	public UI(Controller c) {
 		super("Neural Net Designer");
@@ -142,6 +142,9 @@ public class UI extends JFrame implements ActionListener {
         else if ("ACCURACY_AGAINST_DATASET".equals(e.getActionCommand())) {
         	_controller.accuracyAgainstDataSet();
         }        
+        else if ("VISUALIZE_NETWORK".equals(e.getActionCommand())) {
+        	_controller.visualizeNetwork();
+        }       
         else {
         	System.out.println(e.getActionCommand());
         	System.exit(0);
@@ -209,9 +212,17 @@ public class UI extends JFrame implements ActionListener {
 		runMenu.add(_computeOutput);
 		runMenu.add(_accuracyAgainstDataSet);
 		
+		
+		JMenu visualizeMenu = new JMenu("Visualize");
+		_visualizeNetwork = new JMenuItem("Visualize network");
+		_visualizeNetwork.addActionListener(this);
+		_visualizeNetwork.setActionCommand("VISUALIZE_NETWORK");
+		visualizeMenu.add(_visualizeNetwork);
+		
 		menuBar.add(networkMenu);
 		menuBar.add(dataSetMenu);
 		menuBar.add(runMenu);
+		menuBar.add(visualizeMenu);
 		
 		return menuBar;
     }

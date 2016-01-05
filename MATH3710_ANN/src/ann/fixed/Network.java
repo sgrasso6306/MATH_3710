@@ -1,4 +1,4 @@
-package ann;
+package ann.fixed;
 
 import java.util.Random;
 
