@@ -83,8 +83,8 @@ public class Genome {
 	public ArrayList<NeuronGene> getOutputGeneList() {
 		return _outputNeuronGenes;
 	}
-	public int highestInnovationNumber() {
-		SynapseGene g = _synapseGenes.get(_synapseGenes.size()-1);
+	public int nextInnovationNumber() {
+		SynapseGene g = _synapseGenes.get(_synapseGenes.size());
 		return g.innovationNumber();
 	}
 	public int nextNeuronIndex() {
