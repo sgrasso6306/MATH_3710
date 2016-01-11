@@ -48,7 +48,10 @@ public class Utils {
 		return 1 / (2 + Math.expm1(-input));
 	}
 	
-	
+	public static double neatLogisticFunction(double input) {
+		// expm1(x) = e^(x) - 1 				expm1(x) + 1 is a more accurate approximation than exp(x) for results near zero	
+		return 1 / (2 + Math.expm1(-input*4.9));
+	}
 
 	/*
 	public static double normalize(double lowerBound, double upperBound, double input) {									// no no no needs to be the same number of divisions for all data
