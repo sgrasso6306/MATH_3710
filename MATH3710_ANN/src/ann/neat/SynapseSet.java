@@ -15,6 +15,8 @@ public class SynapseSet {
 	
 	// constructor allowing all synapse genes to be passed at once
 	public SynapseSet(ArrayList<SynapseGene> synapseGenes) {
+		_synapseMap = new HashMap<Integer,ArrayList<Synapse>>();
+		_synapseList = new ArrayList<Synapse>();
 		for (SynapseGene s : synapseGenes) {
 			addSynapse(s.sourceIndex(),s.destIndex(),s.getWeight(),s.getEnabled());
 		}

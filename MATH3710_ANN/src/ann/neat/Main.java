@@ -1,5 +1,7 @@
 package ann.neat;
 
+import linear.algebra.Vector;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -24,14 +26,50 @@ public class Main {
 		
 		System.out.println("synapses");
 		for (SynapseGene n : g.getSynapseGeneList()) {
-			System.out.println(n.sourceIndex()+"->"+n.destIndex()+" innovation: "+n.innovationNumber());
+			System.out.println(n.sourceIndex()+"->"+n.destIndex()+" innovation: "+n.innovationNumber()+" weight: "+n.getWeight());
 		}
 		
 		
-		/*
-		Genome h = new Genome(g);
-		System.out.println(h.highestInnovationNumber());
-		*/
+		Network net = new Network(g);
+		System.out.println("network:");
+		System.out.println("Inputs");
+		for (Neuron n : net._inputNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}		
+		System.out.println("Hidden:");
+		for (Neuron n : net._hiddenNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}				
+		System.out.println("Output:");
+		for (Neuron n : net._outputNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}		
+		System.out.println("synapses:");
+		for (Synapse s : net._synapseSet.getAllSynapsesAsList()) {
+			System.out.println(s.getSource()+"->"+s.getDestination()+"  weight: "+s.getWeight());
+		}		
+
+		Vector input = new Vector(new double[] { 2.5, 5.4, 3.2 });
+		net.propagate(input);
+		System.out.println();
+		System.out.println("propagated");
+		System.out.println("Inputs");
+		for (Neuron n : net._inputNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}		
+		System.out.println("Hidden:");
+		for (Neuron n : net._hiddenNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}				
+		System.out.println("Output:");
+		for (Neuron n : net._outputNeurons.values()) {
+			System.out.println(n.getNeuronIndex() + " Output:"+n.getNeuronOutput());
+		}		
+		System.out.println("synapses:");
+		for (Synapse s : net._synapseSet.getAllSynapsesAsList()) {
+			System.out.println(s.getSource()+"->"+s.getDestination()+"  weight: "+s.getWeight());
+		}			
+		
 	}
 
 }

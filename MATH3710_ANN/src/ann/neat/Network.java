@@ -3,17 +3,25 @@ package ann.neat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import linear.algebra.Vector;
+
 public class Network {
 	private Genome _genome;
-	private HashMap<Integer,Neuron>	_inputNeurons;
-	private HashMap<Integer,Neuron>	_hiddenNeurons;
-	private HashMap<Integer,Neuron>	_outputNeurons;
-	private HashMap<Integer,Neuron> _allNeurons;
-	private SynapseSet				_synapseSet;
+	HashMap<Integer,Neuron>	_inputNeurons;
+	 HashMap<Integer,Neuron>	_hiddenNeurons;
+	 HashMap<Integer,Neuron>	_outputNeurons;
+	 HashMap<Integer,Neuron> _allNeurons;
+	 SynapseSet				_synapseSet;
+	
+	
 	
 	public Network(Genome genome) {
 		_genome = genome;
 		_synapseSet = new SynapseSet(genome.getSynapseGeneList());
+		_inputNeurons = new HashMap<Integer,Neuron>();
+		_hiddenNeurons = new HashMap<Integer,Neuron>();
+		_outputNeurons = new HashMap<Integer,Neuron>();
+		_allNeurons = new HashMap<Integer,Neuron>();
 		
 		// for all input, hidden, and output neuron genes, construct a corresponding neuron
 		for (NeuronGene n : _genome.getInputGeneList()) {
@@ -54,11 +62,14 @@ public class Network {
 	
 	
 	
-	public void propagate() {
+	public void propagate(Vector input) {
 		ArrayList<Neuron> readyToFire = new ArrayList<Neuron>();
 		
-		// initialize ready to fire list with input neurons
+		// initialize ready to fire list with input neurons, set input
+		int in=0;
 		for (Neuron n : _inputNeurons.values()) {
+			n.setOutput(input.getElement(in));
+			in++;
 			readyToFire.add(n);
 		}		
 		

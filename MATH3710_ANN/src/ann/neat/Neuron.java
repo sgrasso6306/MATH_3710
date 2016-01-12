@@ -58,6 +58,11 @@ public class Neuron {
 		_incomingSignalCount++;
 	}
 	
+	// used by input neurons
+	public void setOutput(double newOutput) {
+		_output = newOutput;
+	}
+	
 	
 	public int getNeuronIndex() {
 		return _neuronIndex;
