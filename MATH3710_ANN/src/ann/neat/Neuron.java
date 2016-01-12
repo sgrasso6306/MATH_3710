@@ -6,7 +6,7 @@ import linear.algebra.Utils;
 
 public class Neuron {
 	private double 	_output;						// current output
-	//private double 	_lastOutput;					// last output (for recurrent connections)					// instead of doing this, keep track of recurrent connections and handle them first (use last output before it gets overwritten)
+	//private double 	_lastOutput;					// last output (for recurrent connections)
 	private double 	_inputCollector;				// collects incoming signals
 	private int		_neuronIndex;
 	private int		_incomingSignalCount;			// number of incoming synapses

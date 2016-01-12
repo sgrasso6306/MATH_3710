@@ -12,6 +12,7 @@ public class Network {
 	 HashMap<Integer,Neuron>	_outputNeurons;
 	 HashMap<Integer,Neuron> _allNeurons;
 	 SynapseSet				_synapseSet;
+	 ArrayList<Integer> _lastFiringSequence;
 	
 	
 	
@@ -64,6 +65,7 @@ public class Network {
 	
 	public void propagate(Vector input) {
 		ArrayList<Neuron> readyToFire = new ArrayList<Neuron>();
+		_lastFiringSequence = new ArrayList<Integer>();
 		
 		// initialize ready to fire list with input neurons, set input
 		int in=0;
@@ -76,6 +78,7 @@ public class Network {
 		// iterate through elements in ready to fire list manually, append new neurons as they become ready to fire
 		for (int i=0; i<readyToFire.size(); i++) {
 			Neuron firingNeuron = readyToFire.get(i);
+			_lastFiringSequence.add(firingNeuron.getNeuronIndex());
 			
 			// get firing neuron's destination indices
 			ArrayList<Integer> destinationIndices = firingNeuron.getDestinationNodes();
@@ -96,5 +99,37 @@ public class Network {
 		// at this point, all neurons should have fired and outputs should be computed
 		
 	}
+	
+	
+	public void updateFiringSequence() {
+		ArrayList<Neuron> readyToFire = new ArrayList<Neuron>();
+		_lastFiringSequence = new ArrayList<Integer>();
+		
+		// initialize ready to fire list with input neurons
+		for (Neuron n : _inputNeurons.values()) {
+			readyToFire.add(n);
+		}		
+		
+		// iterate through elements in ready to fire list manually, append new neurons as they become ready to fire
+		for (int i=0; i<readyToFire.size(); i++) {
+			Neuron firingNeuron = readyToFire.get(i);
+			_lastFiringSequence.add(firingNeuron.getNeuronIndex());
+			
+			// get firing neuron's destination indices
+			ArrayList<Integer> destinationIndices = firingNeuron.getDestinationNodes();
+			
+			// for each destination, deliver this neuron's output * corresponding synapse weight
+			for (int j : destinationIndices) {
+				Neuron destinationNeuron = _allNeurons.get(j);
+				
+				// if true, destination neuron has received all signals and is ready to fire
+				if (destinationNeuron.collectSignal(0.0)) {
+					readyToFire.add(destinationNeuron);
+				}
+			}
+		}
+		
+	}
+	
 	
 }

@@ -70,6 +70,11 @@ public class Main {
 			System.out.println(s.getSource()+"->"+s.getDestination()+"  weight: "+s.getWeight());
 		}			
 		
+		System.out.println("Firing Sequence:");
+		for (int i : net._lastFiringSequence) {
+			System.out.println(i);
+		}			
+
 	}
 
 }
