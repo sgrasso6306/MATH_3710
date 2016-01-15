@@ -39,7 +39,7 @@ public class Genome {
 		// add initial synapse connections
 		for (NeuronGene outputNeuron : _outputNeuronGenes) {
 			for (NeuronGene inputNeuron : _inputNeuronGenes) {
-				_synapseGenes.add(new SynapseGene(innovationNumber, inputNeuron.getNeuronIndex(), outputNeuron.getNeuronIndex(), generator.nextDouble()*weightScale, true));
+				_synapseGenes.add(new SynapseGene(innovationNumber, inputNeuron.getNeuronIndex(), outputNeuron.getNeuronIndex(), generator.nextDouble()*weightScale, true, false));
 				innovationNumber++;
 			}
 		}
@@ -69,7 +69,72 @@ public class Genome {
 		_nextNeuronIndex = g.nextNeuronIndex();
 	}
 	
+	// creates new hidden neuron gene assigned next neuron index, increments next neuron index, adds new neuron gene to hidden gene list, returns new neuron gene's index 
+	public NeuronGene addHiddenNeuronGene() {
+		NeuronGene newNeuron = new NeuronGene(NeuronGene.NeuronType.HIDDEN_NEURON,_nextNeuronIndex);
+		_nextNeuronIndex++;
+		_hiddenNeuronGenes.add(newNeuron);
+		return newNeuron;
+	}
 	
+	
+	// add new synapse, generate random weight 
+	public SynapseGene addSynapseGene(int sourceIndex, int destIndex, boolean recurrent) {
+		double weightScale = 1/new Double(_inputNeuronGenes.size());
+		Random generator = new Random();
+		
+		SynapseGene newSynapseGene = new SynapseGene(nextInnovationNumber(), sourceIndex, destIndex, generator.nextDouble()*weightScale, true, recurrent);
+		_synapseGenes.add(newSynapseGene);
+		return newSynapseGene;
+	}
+	
+	// get synapse gene corresponding to given synapse
+	public SynapseGene getSynapseGene(Synapse s) {
+		SynapseGene result = null;
+		for (SynapseGene sGene : _synapseGenes) {
+			if (sGene.sourceIndex() == s.getSource() && sGene.destIndex() == s.getDestination() && sGene.getWeight() == s.getWeight()) {
+				result = sGene;
+				break;
+			}
+		}
+		return result;
+	}
+	
+	public SynapseGene updateSynapseGeneWeight(int source, int dest, double newWeight) {
+		SynapseGene sGene = null;
+		
+		for (SynapseGene sg : _synapseGenes) {
+			if (source == sg.sourceIndex() && dest == sg.destIndex()) {
+				sGene = sg;
+				break;
+			}
+		}
+		
+		sGene.setWeight(newWeight);
+		return sGene;
+	}
+	
+	public NeuronGene getNeuronGene(int neuronIndex) {
+		for (NeuronGene n : _inputNeuronGenes) {
+			if (n.getNeuronIndex() == neuronIndex) {
+				return n;
+			}
+		}
+		for (NeuronGene n : _hiddenNeuronGenes) {
+			if (n.getNeuronIndex() == neuronIndex) {
+				return n;
+			}
+		}
+		for (NeuronGene n : _outputNeuronGenes) {
+			if (n.getNeuronIndex() == neuronIndex) {
+				return n;
+			}
+		}
+		return null;
+	}
+	public NeuronGene getNeuronGene(Neuron n) {
+		return getNeuronGene(n.getNeuronIndex());
+	}
 	
 	public ArrayList<SynapseGene> getSynapseGeneList() {
 		return _synapseGenes;
@@ -84,8 +149,8 @@ public class Genome {
 		return _outputNeuronGenes;
 	}
 	public int nextInnovationNumber() {
-		SynapseGene g = _synapseGenes.get(_synapseGenes.size());
-		return g.innovationNumber();
+		SynapseGene g = _synapseGenes.get(_synapseGenes.size()-1);
+		return g.innovationNumber()+1;
 	}
 	public int nextNeuronIndex() {
 		return _nextNeuronIndex;

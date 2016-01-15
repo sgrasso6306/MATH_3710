@@ -5,12 +5,14 @@ public class Synapse {
 	private int _destIndex;
 	private double _weight;
 	private boolean _enabled;
+	private boolean _recurrent;
 	
-	public Synapse(int source, int dest, double weight, boolean enabled) {
+	public Synapse(int source, int dest, double weight, boolean enabled, boolean recurrent) {
 		_sourceIndex = source;
 		_destIndex = dest;
 		_weight = weight;
 		_enabled = enabled;
+		_recurrent = recurrent;
 	}
 	
 	public int getSource() {
@@ -24,6 +26,9 @@ public class Synapse {
 	}
 	public boolean getEnabled() {
 		return _enabled;
+	}
+	public boolean getRecurrent() {
+		return _recurrent;
 	}
 	
 	public void setWeight(double weight) {

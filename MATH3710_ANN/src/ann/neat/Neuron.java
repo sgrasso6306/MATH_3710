@@ -36,6 +36,9 @@ public class Neuron {
 			return false;
 		}
 	}
+	public void collectRecurrentSignal(double signal) {
+		_inputCollector += signal;
+	}
 	
 	// called between network propagations, resets signal received count and input collector 
 	public void resetNeuronCounters() {
@@ -52,10 +55,16 @@ public class Neuron {
 	public void addNeuronToDestinationList(int destIndex) {
 		_destinationNeurons.add(destIndex);
 	}
+	public void deleteNeuronfromDestinationList(int oldDestIndex) {
+		_destinationNeurons.remove((Object)oldDestIndex);
+	}
 	
 	// increment count of incoming connections
 	public void incrementIncomingConnections() {
 		_incomingSignalCount++;
+	}
+	public void decrementIncomingConnections() {
+		_incomingSignalCount--;
 	}
 	
 	// used by input neurons

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import linear.algebra.Vector;
 
 public class Network {
-	private Genome _genome;
+	 Genome _genome;
 	HashMap<Integer,Neuron>	_inputNeurons;
 	 HashMap<Integer,Neuron>	_hiddenNeurons;
 	 HashMap<Integer,Neuron>	_outputNeurons;
@@ -41,8 +41,8 @@ public class Network {
 			_allNeurons.put(n.getNeuronIndex(), newNeuron);
 		}
 		
-		// set all neurons' incoming connection count and list of destination indices
-		for (Synapse s: _synapseSet.getAllSynapsesAsList()) {
+		// set all neurons' incoming connection count and list of destination indices	(forward synapses only)
+		for (Synapse s : _synapseSet.getForwardSynapsesAsList()) {
 			int sourceIndex = s.getSource();
 			int destinationIndex = s.getDestination();
 			
@@ -59,11 +59,81 @@ public class Network {
 		
 	}
 	
+	// deactivates synapse s, creates new neuron between s's source and destination neurons, connects with two new synapses
+	public Neuron addNeuron(Synapse s) {
+		// genome update
+		boolean recurrent = s.getRecurrent();
+		int sourceIndex = s.getSource();
+		NeuronGene newNeuronGene = _genome.addHiddenNeuronGene();
+		int destIndex = s.getDestination();
+		SynapseGene oldSynapseGene = _genome.getSynapseGene(s);
+		oldSynapseGene.setEnabled(false);
+		
+		SynapseGene sourceSynapseGene = _genome.addSynapseGene(sourceIndex, newNeuronGene.getNeuronIndex(),recurrent);
+		SynapseGene destSynapseGene = _genome.addSynapseGene(newNeuronGene.getNeuronIndex(), destIndex,recurrent);
+		
+		// network update
+		s.setEnabled(false);
+		Neuron newNeuron = new Neuron(newNeuronGene);
+		_hiddenNeurons.put(newNeuron.getNeuronIndex(), newNeuron);
+		_allNeurons.put(newNeuron.getNeuronIndex(), newNeuron);
+		Synapse newSourceSynapse = _synapseSet.addSynapse(sourceSynapseGene);
+		Synapse newDestSynapse =_synapseSet.addSynapse(destSynapseGene);
+		
+		// neuron updates (old source, new neuron)(old destination doesn't need updating)
+		Neuron oldSource = _allNeurons.get(sourceIndex);
+		oldSource.deleteNeuronfromDestinationList(destIndex);
+		oldSource.addNeuronToDestinationList(newNeuronGene.getNeuronIndex());
+		
+		newNeuron.addNeuronToDestinationList(destIndex);
+		newNeuron.incrementIncomingConnections();
+		
+		
+		return newNeuron;
+	}
 	
+	// add new synapse to network and update genome
+	public Synapse addSynapse(int sourceIndex, int destIndex, boolean recurrent) {
+		SynapseGene sGene = _genome.addSynapseGene(sourceIndex, destIndex,recurrent);
+		Synapse s = _synapseSet.addSynapse(sGene);
+		
+		// if not recurrent, update source and destination neurons
+		if (!recurrent) {
+			Neuron sourceNeuron = _allNeurons.get(sourceIndex);
+			Neuron destNeuron = _allNeurons.get(destIndex);
+			
+			sourceNeuron.addNeuronToDestinationList(destIndex);
+			destNeuron.incrementIncomingConnections();
+		}
+		
+		return s;
+	}
 	
-	
+	// change a synapse weight, synchronize genome
+	public void updateSynapseWeight(int source, int dest, double newWeight) {
+		Synapse s = _synapseSet.getSynapse(source, dest);
+		SynapseGene sGene = _genome.getSynapseGene(s);
+		
+		s.setWeight(newWeight);
+		sGene.setWeight(newWeight);
+	}
 	
 	public void propagate(Vector input) {
+		
+		// first, handle recurrent connections using previous outputs
+		ArrayList<Synapse> recurrentSynapses = _synapseSet.getRecurrentSynapsesAsList();
+		
+		for (Synapse s : recurrentSynapses) {
+			Neuron sourceNeuron = _allNeurons.get(s.getSource());
+			Neuron destNeuron = _allNeurons.get(s.getDestination());
+			
+			double signal = sourceNeuron.getNeuronOutput() * s.getWeight();
+			
+			destNeuron.collectRecurrentSignal(signal);
+		}
+		
+		
+		
 		ArrayList<Neuron> readyToFire = new ArrayList<Neuron>();
 		_lastFiringSequence = new ArrayList<Integer>();
 		
@@ -92,6 +162,10 @@ public class Network {
 				// if true, destination neuron has received all signals and is ready to fire
 				if (destinationNeuron.collectSignal(signal)) {
 					readyToFire.add(destinationNeuron);
+					
+					// synchronize neuron gene's output
+					NeuronGene destinationNeuronGene = _genome.getNeuronGene(destinationNeuron);
+					destinationNeuronGene.setLastNeuronOutput(destinationNeuron.getNeuronOutput());
 				}
 			}
 		}
@@ -130,6 +204,8 @@ public class Network {
 		}
 		
 	}
+	
+	
 	
 	
 }

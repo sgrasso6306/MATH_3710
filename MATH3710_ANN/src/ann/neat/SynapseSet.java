@@ -6,25 +6,28 @@ import java.util.HashMap;
 public class SynapseSet {
 
 	private HashMap<Integer,ArrayList<Synapse>>		_synapseMap;			// index by source neuron, corresponding value is list of all synapses originating from source neuron
-	private ArrayList<Synapse>						_synapseList;						
+	private ArrayList<Synapse>						_forwardSynapseList;
+	private ArrayList<Synapse>						_recurrentSynapseList;
 	
 	public SynapseSet() {
 		_synapseMap = new HashMap<Integer,ArrayList<Synapse>>();
-		_synapseList = new ArrayList<Synapse>();
+		_forwardSynapseList = new ArrayList<Synapse>();
+		_recurrentSynapseList = new ArrayList<Synapse>();
 	}
 	
 	// constructor allowing all synapse genes to be passed at once
 	public SynapseSet(ArrayList<SynapseGene> synapseGenes) {
 		_synapseMap = new HashMap<Integer,ArrayList<Synapse>>();
-		_synapseList = new ArrayList<Synapse>();
+		_forwardSynapseList = new ArrayList<Synapse>();
+		_recurrentSynapseList = new ArrayList<Synapse>();
 		for (SynapseGene s : synapseGenes) {
-			addSynapse(s.sourceIndex(),s.destIndex(),s.getWeight(),s.getEnabled());
+			addSynapse(s.sourceIndex(),s.destIndex(),s.getWeight(),s.getEnabled(),s.getRecurrent());
 		}
 	}
 	
-	public void addSynapse(int source, int dest, double weight, boolean enabled) {
+	public Synapse addSynapse(int source, int dest, double weight, boolean enabled, boolean recurrent) {
 		// create new synapse
-		Synapse newSynapse = new Synapse(source, dest, weight, enabled);
+		Synapse newSynapse = new Synapse(source, dest, weight, enabled, recurrent);
 		
 		// if the hashmap doesn't have an entry for this source node, create one
 		if (!_synapseMap.containsKey(source)) {
@@ -38,9 +41,30 @@ public class SynapseSet {
 			sList.add(newSynapse);
 		}
 		
-		// add new synapse to list
-		_synapseList.add(newSynapse);
+		// if recurrent, add to recurrent synapse list. Else, add to forward synapse list
+		if (recurrent) {
+			_recurrentSynapseList.add(newSynapse);
+		}
+		else {
+			_forwardSynapseList.add(newSynapse);
+		}
+				
+		return newSynapse;
 	}
+	
+	public Synapse addSynapse(SynapseGene sGene) {
+		return addSynapse(sGene.sourceIndex(),sGene.destIndex(),sGene.getWeight(),sGene.getEnabled(),sGene.getRecurrent());
+	}
+	
+	
+	public Synapse updateSynapseWeight(int source, int dest, double newWeight) {
+		Synapse s = getSynapse(source, dest);
+		s.setWeight(newWeight);
+		return s;
+	}
+	
+	
+	
 	
 	public Synapse getSynapse(int source, int dest) {
 		ArrayList<Synapse> sList = _synapseMap.get(source);
@@ -59,7 +83,10 @@ public class SynapseSet {
 		return _synapseMap.get(source);
 	}
 	
-	public ArrayList<Synapse> getAllSynapsesAsList() {
-		return _synapseList;
+	public ArrayList<Synapse> getForwardSynapsesAsList() {
+		return _forwardSynapseList;
+	}
+	public ArrayList<Synapse> getRecurrentSynapsesAsList() {
+		return _recurrentSynapseList;
 	}
 }

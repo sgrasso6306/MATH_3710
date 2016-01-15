@@ -3,16 +3,18 @@ package ann.neat;
 public class SynapseGene {
 	private int _innovationNumber;
 	private boolean _enabled;
+	private boolean _recurrent;
 	private int _sourceIndex;
 	private int _destIndex;
 	private double _weight;
 	
-	public SynapseGene(int innovationNumber, int sourceIndex, int destIndex, double weight, boolean enabled) {
+	public SynapseGene(int innovationNumber, int sourceIndex, int destIndex, double weight, boolean enabled, boolean recurrent) {
 		_innovationNumber = innovationNumber;
 		_sourceIndex = sourceIndex;
 		_destIndex = destIndex;
 		_weight = weight;
 		_enabled = enabled;
+		_recurrent = recurrent;
 	}
 	
 	public void setWeight(double newWeight) {
@@ -27,6 +29,9 @@ public class SynapseGene {
 	}
 	public boolean getEnabled() {
 		return _enabled;
+	}
+	public boolean getRecurrent() {
+		return _recurrent;
 	}
 	public int innovationNumber() {
 		return _innovationNumber;
