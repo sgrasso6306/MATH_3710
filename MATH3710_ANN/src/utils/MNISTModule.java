@@ -9,7 +9,6 @@ import java.io.IOException;
 import javax.swing.SwingUtilities;
 
 import ann.UI.UI;
-import ann.fixed.DataSet;
 
 /**
  * This class implements a reader for the MNIST dataset of handwritten digits. The dataset is found

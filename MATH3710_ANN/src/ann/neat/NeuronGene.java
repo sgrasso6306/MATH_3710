@@ -17,6 +17,13 @@ public class NeuronGene {
 		_lastNeuronOutput = 0.0;
 	}
 	
+	// copy constructor
+	public NeuronGene(NeuronGene nGene) {
+		_neuronType = nGene.getNeuronType();
+		_neuronIndex = nGene.getNeuronIndex();
+		_lastNeuronOutput = nGene.getLastNeuronOutput();
+	}
+	
 	public NeuronType getNeuronType() {
 		return _neuronType;
 	}

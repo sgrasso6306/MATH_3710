@@ -1,4 +1,4 @@
-package ann.fixed;
+package utils;
 
 import linear.algebra.Vector;
 
@@ -45,6 +45,16 @@ public class DataSet implements java.io.Serializable{
 		return _outputs[index];
 	}	
 	
+	public Vector getObservationAsVector(int index) {
+		double[] obs = getObservation(index);
+		Vector result = new Vector(obs);
+		return result;
+	}
+	public Vector getOutputAsVector(int index) {
+		double[] out = getOutput(index);
+		Vector result = new Vector(out);
+		return result;
+	}
 	
 	public boolean evaluateClassification(int index, Vector actuals) {
 		Vector targets = new Vector(getOutput(index));

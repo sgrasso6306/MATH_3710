@@ -11,6 +11,7 @@ import java.util.Random;
 import org.apache.poi.xssf.eventusermodel.XLSX2CSV;
 
 import utils.DataModule;
+import utils.DataSet;
 import utils.ImageModule;
 import utils.MNISTModule;
 import linear.algebra.Matrix;

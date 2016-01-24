@@ -1,5 +1,8 @@
 package linear.algebra;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Utils {
 
 	
@@ -53,18 +56,38 @@ public class Utils {
 		return 1 / (2 + Math.expm1(-input*4.9));
 	}
 
-	/*
-	public static double normalize(double lowerBound, double upperBound, double input) {									// no no no needs to be the same number of divisions for all data
-		double range = upperBound - lowerBound;
-		double scaledInput = input;
+	// computes the result of a bernoulli random variable with supplied probability p
+	public static boolean bernoulliTrial(double p) {
+		Random generator = new Random();
 		
-		while (scaledInput > range) {						// no nonononono
-			scaledInput = scaledInput / 10.0;
+		double r = generator.nextDouble();
+		boolean result = false;
+		if (r < p) {
+			result = true;
 		}
 		
-		scaledInput = scaledInput + lowerBound;
-		
-		return scaledInput;
+		System.out.println(r);
+		return result;
 	}
-	*/
+	
+	public static <T> T selectRandomElement(ArrayList<T> list) {
+		Random rand = new Random();
+		int index = rand.nextInt(list.size());
+		
+		return list.get(index);
+	}
+	
+	public static <T> T selectRandomElementExcluding(ArrayList<T> list, T exclude) {
+		Random rand = new Random();
+		int index = rand.nextInt(list.size());
+		
+		T possibleResult = list.get(index);
+		
+		while (possibleResult.equals(exclude)) {
+			index = rand.nextInt(list.size());
+			possibleResult = list.get(index);
+		}		
+		
+		return possibleResult;
+	}
 }

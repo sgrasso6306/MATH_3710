@@ -11,8 +11,6 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import ann.fixed.DataSet;
-
 public class ImageModule {
 
 	// get image input from file

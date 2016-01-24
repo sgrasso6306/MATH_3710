@@ -82,6 +82,8 @@ public class Neuron {
 	public ArrayList<Integer> getDestinationNodes() {
 		return _destinationNeurons;
 	}
-	
+	public int getIncomingSignalCount() {
+		return _incomingSignalCount;
+	}
 	
 }

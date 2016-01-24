@@ -11,9 +11,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import linear.algebra.Vector;
+import utils.DataSet;
 import utils.ImageModule;
 import utils.MNISTModule;
-import ann.fixed.DataSet;
 import ann.fixed.Network;
 import ann.visual.Visualizer;
 

@@ -13,7 +13,8 @@ public class Network {
 	 HashMap<Integer,Neuron> _allNeurons;
 	 SynapseSet				_synapseSet;
 	 ArrayList<Integer> _lastFiringSequence;
-	
+	double				_lifetimeFitnessSum;
+	int					_lifetimeFitnessCount;
 	
 	
 	public Network(Genome genome) {
@@ -23,6 +24,8 @@ public class Network {
 		_hiddenNeurons = new HashMap<Integer,Neuron>();
 		_outputNeurons = new HashMap<Integer,Neuron>();
 		_allNeurons = new HashMap<Integer,Neuron>();
+		_lifetimeFitnessSum = 0.0;
+		_lifetimeFitnessCount = 0;
 		
 		// for all input, hidden, and output neuron genes, construct a corresponding neuron
 		for (NeuronGene n : _genome.getInputGeneList()) {
@@ -59,8 +62,53 @@ public class Network {
 		
 	}
 	
+	// reproduction constructor
+	public Network(Network parent1, Network parent2) {
+		Genome childGenome = new Genome(parent1.getGenome(),parent2.getGenome());
+		_genome = childGenome;
+		_synapseSet = new SynapseSet(childGenome.getSynapseGeneList());
+		_inputNeurons = new HashMap<Integer,Neuron>();
+		_hiddenNeurons = new HashMap<Integer,Neuron>();
+		_outputNeurons = new HashMap<Integer,Neuron>();
+		_allNeurons = new HashMap<Integer,Neuron>();
+		_lifetimeFitnessSum = 0.0;
+		_lifetimeFitnessCount = 0;
+		
+		// for all input, hidden, and output neuron genes, construct a corresponding neuron
+		for (NeuronGene n : _genome.getInputGeneList()) {
+			Neuron newNeuron = new Neuron(n);
+			_inputNeurons.put(n.getNeuronIndex(), newNeuron);
+			_allNeurons.put(n.getNeuronIndex(), newNeuron);
+		}
+		for (NeuronGene n : _genome.getHiddenGeneList()) {
+			Neuron newNeuron = new Neuron(n);
+			_hiddenNeurons.put(n.getNeuronIndex(), newNeuron);
+			_allNeurons.put(n.getNeuronIndex(), newNeuron);
+		}
+		for (NeuronGene n : _genome.getOutputGeneList()) {
+			Neuron newNeuron = new Neuron(n);
+			_outputNeurons.put(n.getNeuronIndex(), newNeuron);
+			_allNeurons.put(n.getNeuronIndex(), newNeuron);
+		}
+		
+		// set all neurons' incoming connection count and list of destination indices	(forward synapses only)
+		for (Synapse s : _synapseSet.getForwardSynapsesAsList()) {
+			int sourceIndex = s.getSource();
+			int destinationIndex = s.getDestination();
+			
+			Neuron sourceNeuron = _allNeurons.get(sourceIndex);
+			Neuron destinationNeuron = _allNeurons.get(destinationIndex);
+			
+			// destination neuron is added source neuron's destination index
+			sourceNeuron.addNeuronToDestinationList(destinationIndex);
+			
+			// destination neuron's incoming connection count is incremented
+			destinationNeuron.incrementIncomingConnections();
+		}
+	}
+	
 	// deactivates synapse s, creates new neuron between s's source and destination neurons, connects with two new synapses
-	public Neuron addNeuron(Synapse s) {
+	public Neuron addNeuron(Synapse s, int firstInnovationNumber) {
 		// genome update
 		boolean recurrent = s.getRecurrent();
 		int sourceIndex = s.getSource();
@@ -69,8 +117,8 @@ public class Network {
 		SynapseGene oldSynapseGene = _genome.getSynapseGene(s);
 		oldSynapseGene.setEnabled(false);
 		
-		SynapseGene sourceSynapseGene = _genome.addSynapseGene(sourceIndex, newNeuronGene.getNeuronIndex(),recurrent);
-		SynapseGene destSynapseGene = _genome.addSynapseGene(newNeuronGene.getNeuronIndex(), destIndex,recurrent);
+		SynapseGene sourceSynapseGene = _genome.addSynapseGene(sourceIndex, newNeuronGene.getNeuronIndex(),firstInnovationNumber, recurrent);
+		SynapseGene destSynapseGene = _genome.addSynapseGene(newNeuronGene.getNeuronIndex(), destIndex, firstInnovationNumber+1, recurrent);
 		
 		// network update
 		s.setEnabled(false);
@@ -93,8 +141,20 @@ public class Network {
 	}
 	
 	// add new synapse to network and update genome
-	public Synapse addSynapse(int sourceIndex, int destIndex, boolean recurrent) {
-		SynapseGene sGene = _genome.addSynapseGene(sourceIndex, destIndex,recurrent);
+	public Synapse addSynapse(int sourceIndex, int destIndex, int innovationNumber) {
+		boolean recurrent = false;
+		for (Integer i : _lastFiringSequence) {
+			if (i.equals(sourceIndex)) {
+				recurrent = false;
+				break;
+			}
+			if (i.equals(destIndex)) {
+				recurrent = true;
+				break;
+			}
+		}
+		
+		SynapseGene sGene = _genome.addSynapseGene(sourceIndex, destIndex, innovationNumber, recurrent);
 		Synapse s = _synapseSet.addSynapse(sGene);
 		
 		// if not recurrent, update source and destination neurons
@@ -118,7 +178,9 @@ public class Network {
 		sGene.setWeight(newWeight);
 	}
 	
-	public void propagate(Vector input) {
+	
+	// propagates input, returns fitness if given target vector
+	public Double propagate(Vector input, Vector targets) {
 		
 		// first, handle recurrent connections using previous outputs
 		ArrayList<Synapse> recurrentSynapses = _synapseSet.getRecurrentSynapsesAsList();
@@ -170,7 +232,32 @@ public class Network {
 			}
 		}
 		
-		// at this point, all neurons should have fired and outputs should be computed
+		// at this point, all neurons should have fired and outputs should be computed. Compute raw fitness if target vector supplied
+		
+		if (targets == null) {
+			return null;
+		}
+		else {
+			if (targets.size() != _outputNeurons.size()) {
+				return null;
+			}
+			
+			// target vector is valid for outputs, so compute raw fitness
+			double squaredErrorSum = 0.0;
+			ArrayList<Integer> orderedOutputIndices = _genome.getOrderedOutputList();
+			
+			for (int i=0; i<targets.size(); i++) {
+				double actualOutput = _allNeurons.get(orderedOutputIndices.get(i)).getNeuronOutput();
+				double targetOutput = targets.getElement(i);
+				squaredErrorSum += (targetOutput - actualOutput) * (targetOutput - actualOutput);
+			}
+			
+			double rawFitness = ((double)targets.size() - squaredErrorSum) / (double)targets.size();
+			_lifetimeFitnessSum += rawFitness;
+			_lifetimeFitnessCount ++;
+			_genome.setLifetimeFitness(getLifetimeFitnessAverage());
+			return rawFitness;
+		}
 		
 	}
 	
@@ -205,7 +292,35 @@ public class Network {
 		
 	}
 	
+	public Genome getGenome() {
+		return _genome;
+	}
 	
+	public ArrayList<Synapse> getSynapsesAsList() {
+		ArrayList<Synapse> result = new ArrayList<Synapse>();
+		result.addAll(_synapseSet.getForwardSynapsesAsList());
+		result.addAll(_synapseSet.getRecurrentSynapsesAsList());
+		return result;
+	}
 	
+	public ArrayList<Neuron> getInputNeuronsAsList() {
+		return new ArrayList<Neuron>(_inputNeurons.values());
+	}
+	public ArrayList<Neuron> getHiddenNeuronsAsList() {
+		return new ArrayList<Neuron>(_hiddenNeurons.values());
+	}
+	public ArrayList<Neuron> getOutputNeuronsAsList() {
+		return new ArrayList<Neuron>(_outputNeurons.values());
+	}
+	public Neuron getNeuron(int index) {
+		return _allNeurons.get(index);
+	}
+	
+	public double getLifetimeFitnessAverage() {
+		if (_lifetimeFitnessCount == 0) {
+			return 0;
+		}
+		return _lifetimeFitnessSum / (double)_lifetimeFitnessCount;
+	}
 	
 }

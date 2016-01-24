@@ -17,6 +17,16 @@ public class SynapseGene {
 		_recurrent = recurrent;
 	}
 	
+	// copy constructor
+	public SynapseGene(SynapseGene sGene) {
+		_innovationNumber = sGene.innovationNumber();
+		_sourceIndex = sGene.sourceIndex();
+		_destIndex = sGene.destIndex();
+		_weight = sGene.getWeight();
+		_enabled = sGene.getEnabled();
+		_recurrent = sGene.getRecurrent();
+	}
+	
 	public void setWeight(double newWeight) {
 		_weight = newWeight;
 	}

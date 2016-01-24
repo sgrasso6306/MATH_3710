@@ -1,10 +1,16 @@
 package ann.neat;
 
+import java.util.ArrayList;
+
+import linear.algebra.Utils;
 import linear.algebra.Vector;
 
 public class Main {
 
 	public static void main(String[] args) {
+		
+		/*
+		
 		Genome g0 = new Genome(3,2);
 		
 		Genome g = new Genome(g0);
@@ -50,7 +56,7 @@ public class Main {
 		}		
 
 		Vector input = new Vector(new double[] { 2.5, 5.4, 3.2 });
-		net.propagate(input);
+		net.propagate(input, null);
 		System.out.println();
 		System.out.println("propagated");
 		System.out.println("Inputs");
@@ -87,7 +93,7 @@ public class Main {
 		net.addSynapse(0, 5, false);
 		net.addSynapse(4, 5, true);
 		
-		net.propagate(input);
+		net.propagate(input, null);
 		System.out.println("added neuron between 1->3");
 		System.out.println("Inputs");
 		for (Neuron n : net._inputNeurons.values()) {
@@ -132,19 +138,26 @@ public class Main {
 			System.out.println(n.sourceIndex()+"->"+n.destIndex()+" innovation: "+n.innovationNumber()+" weight: "+n.getWeight()+" enabled: "+n.getEnabled());
 		}
 		
+		*/
+		
+		Species s = new Species();
+		
+		Genome g = new Genome(3,2);
+		Network n1 = new Network(g);
+		Network n2 = new Network(g);
+		Network n3 = new Network(g);
+		
+		n1._lifetimeFitnessSum = 10;
+		n1._lifetimeFitnessCount = 1;
+		n2._lifetimeFitnessSum = 20;
+		n2._lifetimeFitnessCount = 1;
+		n3._lifetimeFitnessSum = 3;
+		n3._lifetimeFitnessCount = 1;
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		s.addNetworkToSpecies(n1);
+		s.addNetworkToSpecies(n2);
+		s.addNetworkToSpecies(n3);
 		
 		
 		
